@@ -1,6 +1,6 @@
 import type { Restaurant } from './mockData';
 
-const BASE_URL = 'http://localhost:8080/api/v1'; // [변경됨] 진짜 백엔드 서버 주소로 연결했습니다.
+const BASE_URL = 'https://alco-bal.vercel.app/api/v1'; // [변경됨] 진짜 백엔드 서버 주소로 연결했습니다.
 
 export const getSearchResults = async (keyword: string = ""): Promise<Restaurant[]> => {
   const url = new URL(`${BASE_URL}/restaurants`); // [추가] 검색어에 맞춰 백엔드에 요청합니다.
