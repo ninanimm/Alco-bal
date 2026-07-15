@@ -1,27 +1,35 @@
-import { RECENT_SEARCHES, HOT_PLACES, type HotPlace, RESTAURANT_RESULTS, type Restaurant } from './mockData';
+import type { HotPlace, Restaurant } from './mockData';
 
-// 실제 백엔드 연동 전까지 Mock Data를 반환하는 API 함수들
+const BASE_URL = 'http://localhost:8080/api/v1'; // [변경됨] 진짜 백엔드 서버 주소로 변경했습니다.
 
 export const getRecentSearches = async (): Promise<string[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(RECENT_SEARCHES);
-    }, 300); // 300ms 지연으로 네트워크 요청 시뮬레이션
-  });
+  const response = await fetch(`${BASE_URL}/search/recent`); // [추가] 백엔드에 최근 검색어를 요청합니다.
+  if (!response.ok) {
+    throw new Error('Failed to fetch recent searches');
+  }
+  return response.json();
 };
 
 export const getHotPlaces = async (): Promise<HotPlace[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(HOT_PLACES);
-    }, 300);
-  });
+  const response = await fetch(`${BASE_URL}/places/hot`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch hot places');
+  }
+  return response.json();
 };
 
-export const getRestaurants = async (): Promise<Restaurant[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(RESTAURANT_RESULTS);
-    }, 300);
-  });
+export const getRestaurants = async (keyword: string = ""): Promise<Restaurant[]> => {
+  const url = new URL(`${BASE_URL}/restaurants`);
+  if (keyword) {
+    url.searchParams.append('keyword', keyword);
+  } else {
+    // 백엔드는 keyword를 필수로 받게 되어있지만 빈문자열도 허용합니다. (query = query)
+    url.searchParams.append('keyword', '');
+  }
+  
+  const response = await fetch(url.toString());
+  if (!response.ok) {
+    throw new Error('Failed to fetch restaurants');
+  }
+  return response.json();
 };
