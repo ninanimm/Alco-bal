@@ -14,8 +14,8 @@ export const SearchResultPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   // 현재 밸런스 비율 상태 (임시로 70:30 사용)
-  const [alcoholRatio, setAlcoholRatio] = useState(70);
-  const [nonAlcoholRatio, setNonAlcoholRatio] = useState(30);
+  const [alcoholRatio] = useState(70);
+  const [nonAlcoholRatio] = useState(30);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,12 +47,6 @@ export const SearchResultPage: React.FC = () => {
     alert(`'${restaurant.name}' 상세 페이지로 진입합니다.`);
   };
 
-  const handleFavoriteClick = (restaurantId: number, e: React.MouseEvent) => {
-    // 찜하기 토글
-    setRestaurants(prev => 
-      prev.map(r => r.id === restaurantId ? { ...r, isFavorite: !r.isFavorite } : r)
-    );
-  };
 
   return (
     <div className="min-h-screen bg-canvas pb-[130px] md:pb-[80px] relative">
@@ -88,7 +82,7 @@ export const SearchResultPage: React.FC = () => {
                   key={restaurant.id}
                   restaurant={restaurant}
                   onClick={() => handleCardClick(restaurant)}
-                  onFavoriteClick={(e) => handleFavoriteClick(restaurant.id, e)}
+
                 />
               ))}
             </div>
