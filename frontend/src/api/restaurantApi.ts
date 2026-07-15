@@ -9,7 +9,7 @@ export const getSearchResults = async (keyword: string = ""): Promise<Restaurant
   } else {
     url.searchParams.append('keyword', '');
   }
-  
+
   const response = await fetch(url.toString());
   if (!response.ok) {
     throw new Error('Failed to fetch search results');

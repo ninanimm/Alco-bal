@@ -1,55 +1,24 @@
-CREATE TABLE PLACES (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL,
-    image_url VARCHAR(255) NOT NULL
-);
+-- PostGIS 확장 기능 활성화 (최초 1회 실행 필요)
+CREATE EXTENSION IF NOT EXISTS postgis;
 
-CREATE TABLE RESTAURANTS (
+-- 1. 식당 기본 정보 테이블
+CREATE TABLE IF NOT EXISTS restaurants (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    location VARCHAR(100) NOT NULL,
-    latitude DECIMAL(10,8) NOT NULL,
-    longitude DECIMAL(11,8) NOT NULL,
-    image_url VARCHAR(255),
-    corkage_info VARCHAR(255)
+    location GEOGRAPHY(Point, 4326) NOT NULL, -- 미터(m) 단위 계산을 위해 geography 사용
+    alcohol_score NUMERIC(3,1) DEFAULT 0.0,
+    non_alcohol_score NUMERIC(3,1) DEFAULT 0.0
 );
 
-CREATE TABLE TAGS (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(50) UNIQUE NOT NULL
+-- 2. 논알콜 상세 정보 테이블 (1:1 관계)
+CREATE TABLE IF NOT EXISTS non_alcohol_info (
+    restaurant_id INT PRIMARY KEY REFERENCES restaurants(id) ON DELETE CASCADE, -- PK 겸 FK
+    has_zero_beer BOOLEAN DEFAULT FALSE,
+    has_zero_wine BOOLEAN DEFAULT FALSE,
+    corkage_type VARCHAR(20) CHECK (corkage_type IN ('FREE', 'CHARGE', 'NONE')), -- 데이터 오염 방지
+    corkage_price INT DEFAULT 0,
+    updated_at TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TABLE RESTAURANT_TAGS (
-    restaurant_id INT REFERENCES RESTAURANTS(id),
-    tag_id INT REFERENCES TAGS(id),
-    PRIMARY KEY (restaurant_id, tag_id)
-);
-
-CREATE TABLE NON_ALCOHOL_OPTIONS (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(50) UNIQUE NOT NULL
-);
-
-CREATE TABLE RESTAURANT_NON_ALCOHOLS (
-    restaurant_id INT REFERENCES RESTAURANTS(id),
-    option_id INT REFERENCES NON_ALCOHOL_OPTIONS(id),
-    PRIMARY KEY (restaurant_id, option_id)
-);
-
-CREATE TABLE USERS (
-    id SERIAL PRIMARY KEY,
-    nickname VARCHAR(50)
-);
-
-CREATE TABLE RECENT_SEARCHES (
-    id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES USERS(id),
-    keyword VARCHAR(50) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE FAVORITE_RESTAURANTS (
-    user_id INT REFERENCES USERS(id),
-    restaurant_id INT REFERENCES RESTAURANTS(id),
-    PRIMARY KEY (user_id, restaurant_id)
-);
+-- 성능 최적화를 위한 공간 인덱스 생성 (주변 식당 검색 속도 향상)
+CREATE INDEX IF NOT EXISTS idx_restaurants_location ON restaurants USING gist(location);
