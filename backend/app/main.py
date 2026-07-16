@@ -36,13 +36,15 @@ def get_hot_places(db: Session = Depends(get_db)):
 # 3. 식당 검색 및 리스팅
 @app.get("/api/v1/restaurants", response_model=List[schemas.RestaurantListResponse])
 def search_restaurants(
-    keyword: str = Query(..., description="모임 장소 검색어 (예: 성수동)"),
+    keyword: str = Query("", description="모임 장소 검색어 (예: 성수동)"),
+    lat: float = Query(37.5701, description="사용자 위도 (기본값: 종각역)"),
+    lng: float = Query(126.9831, description="사용자 경도 (기본값: 종각역)"),
     date: Optional[str] = Query(None, description="모임 날짜 (예: 2024-12-25)"),
     total_people: Optional[int] = Query(None, description="전체 인원수"),
     drinker_ratio: int = Query(50, description="음주인 비율 (0~100)"),
     db: Session = Depends(get_db)
 ):
-    return crud.search_restaurants(db=db, keyword=keyword, date=date, total_people=total_people, drinker_ratio=drinker_ratio)
+    return crud.search_restaurants(db=db, keyword=keyword, lat=lat, lng=lng, date=date, total_people=total_people, drinker_ratio=drinker_ratio)
 
 # 4. 식당 상세 정보 조회
 @app.get("/api/v1/restaurants/{id}", response_model=schemas.RestaurantDetailResponse)

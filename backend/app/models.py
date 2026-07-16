@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, DECIMAL, ForeignKey, Table
+from sqlalchemy import Column, Integer, String, Text, DateTime, DECIMAL, ForeignKey, Table, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
+from geoalchemy2 import Geography
 from .database import Base
 
 # ==============================================================================
@@ -43,15 +44,29 @@ class Restaurant(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), nullable=False)
-    location = Column(String(100), nullable=False)
-    latitude = Column(DECIMAL(10, 8), nullable=False)
-    longitude = Column(DECIMAL(11, 8), nullable=False)
+    address = Column(String(255), nullable=False, default="서울 종로구")
+    location = Column(Geography('POINT', srid=4326), nullable=False)
+    alcohol_score = Column(DECIMAL(3, 1), default=0.0)
+    non_alcohol_score = Column(DECIMAL(3, 1), default=0.0)
     image_url = Column(String(255))
     corkage_info = Column(String(255))
 
     # 관계 설정 (파이썬 코드에서 쉽게 데이터를 불러오기 위함)
     tags = relationship("Tag", secondary=restaurant_tags, back_populates="restaurants")
     non_alcohol_options = relationship("NonAlcoholOption", secondary=restaurant_non_alcohols, back_populates="restaurants")
+    non_alcohol_info = relationship("NonAlcoholInfo", back_populates="restaurant", uselist=False, cascade="all, delete-orphan")
+
+class NonAlcoholInfo(Base):
+    __tablename__ = "non_alcohol_info"
+
+    restaurant_id = Column(Integer, ForeignKey("restaurants.id", ondelete="CASCADE"), primary_key=True)
+    has_zero_beer = Column(Boolean, default=False)
+    has_zero_wine = Column(Boolean, default=False)
+    corkage_type = Column(String(20)) # 'FREE', 'CHARGE', 'NONE'
+    corkage_price = Column(Integer, default=0)
+    updated_at = Column(DateTime, server_default=func.now())
+
+    restaurant = relationship("Restaurant", back_populates="non_alcohol_info")
 
 class Tag(Base):
     __tablename__ = "tags"
