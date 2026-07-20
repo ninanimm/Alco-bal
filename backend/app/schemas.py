@@ -1,4 +1,5 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
+from pydantic.alias_generators import to_camel
 from typing import List, Optional
 
 # ==============================================================================
@@ -7,30 +8,40 @@ from typing import List, Optional
 
 # 핫플레이스 응답 스키마
 class PlaceResponse(BaseModel):
+    # model_config: 파이썬 snake_case → JSON camelCase 자동 변환 (예: image_url → imageUrl)
+    model_config = ConfigDict(
+        from_attributes=True,
+        populate_by_name=True,
+        alias_generator=to_camel  # 모든 필드를 camelCase로 자동 변환합니다.
+    )
+
     id: int
     name: str
-    imageUrl: str = Field(alias="image_url") # 파이썬(스네이크 케이스)과 프론트엔드(카멜 케이스) 이름 맞추기
-
-    class Config:
-        from_attributes = True
-        populate_by_name = True
+    image_url: str
 
 # 식당 목록 응답 스키마 (검색 결과)
 class RestaurantListResponse(BaseModel):
+    # alias_generator로 snake_case → camelCase 자동 변환
+    # 예: balance_score → balanceScore, non_alcohol_options → nonAlcoholOptions
+    model_config = ConfigDict(
+        from_attributes=True,
+        populate_by_name=True,
+        alias_generator=to_camel
+    )
+
     id: int
     name: str
     location: str
-    distance: str # 예: "320m"
-    balanceScore: int = Field(alias="balance_score") # 예: 98
-    imageUrl: Optional[str] = Field(default=None, alias="image_url")
-    isFavorite: bool = Field(default=False, alias="is_favorite")
+    distance: str
+    balance_score: int = 0          # → balanceScore
+    image_url: Optional[str] = None  # → imageUrl
+    is_favorite: bool = False        # → isFavorite
     tags: List[str] = []
+    non_alcohol_options: List[str] = []   # → nonAlcoholOptions
+    corkage_info: Optional[str] = None    # → corkageInfo
+    menu: List[str] = []                  # 메뉴 목록 (크롤링 데이터)
+    recommendation_reason: Optional[str] = None  # → recommendationReason (추천 이유)
 
-    class Config:
-        from_attributes = True
-        populate_by_name = True
-
-# 식당 상세 응답 스키마 (목록 응답에 논알콜 옵션과 콜키지 정보 추가)
+# 식당 상세 응답 스키마
 class RestaurantDetailResponse(RestaurantListResponse):
-    nonAlcoholOptions: List[str] = Field(default=[], alias="non_alcohol_options")
-    corkageInfo: Optional[str] = Field(default=None, alias="corkage_info")
+    pass  # 상위 모델의 모든 필드를 그대로 사용합니다.
