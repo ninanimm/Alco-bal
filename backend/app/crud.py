@@ -24,18 +24,25 @@ def search_restaurants(db: Session, keyword: str, lat: float, lng: float, date: 
     
     user_location = f"SRID=4326;POINT({lng} {lat})"
 
-    # 1. 2km 이내 식당 조회 및 거리 계산
+    # 1. 2km 이내 식당 조회 및 거리 계산 (단, 검색어가 있으면 거리 제한 해제)
     from sqlalchemy.orm import selectinload
     
     query = db.query(
         models.Restaurant,
         func.ST_Distance(models.Restaurant.location, func.ST_GeographyFromText(user_location)).label("distance_m")
-    ).filter(func.ST_DWithin(models.Restaurant.location, func.ST_GeographyFromText(user_location), 2000)).options(
+    ).options(
         selectinload(models.Restaurant.tags)
     )
     
     if keyword:
-        query = query.filter(models.Restaurant.name.ilike(f"%{keyword}%"))
+        # 검색어가 있으면 이름이나 주소에서 검색하고, 거리 제한을 두지 않음
+        query = query.filter(
+            (models.Restaurant.name.ilike(f"%{keyword}%")) | 
+            (models.Restaurant.address.ilike(f"%{keyword}%"))
+        )
+    else:
+        # 검색어가 없으면 2km 이내만 표시
+        query = query.filter(func.ST_DWithin(models.Restaurant.location, func.ST_GeographyFromText(user_location), 2000))
             
     restaurants_with_dist = query.all()
     
