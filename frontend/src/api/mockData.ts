@@ -43,6 +43,10 @@ export interface Restaurant {
   imageUrl: string;
   isFavorite: boolean;
   tags: string[];
+  nonAlcoholOptions: string[];
+  corkageInfo?: string;
+  menu?: string[]; // 메뉴 목록
+  recommendationReason?: string; // 추천 이유
 }
 
 export const RESTAURANT_RESULTS: Restaurant[] = [
@@ -55,6 +59,8 @@ export const RESTAURANT_RESULTS: Restaurant[] = [
     imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuB1lFtTgM3-JlwhCh_NLErRa72uQcC5D57dHAkkGMEmlbcHIPx35ioivAIOCipJK-szmPgLndlFLGLZ1MigYb7FHhmB8aO1FlrrWOCTm_saKVVF5GFcEK1X6yonyksOMhvs54M6aDyW_-Rjm_CeV-uu4JSMEf83WgjTkJuTndpbBe3Fc6gh5WnrUs2640cWBBCeeyEAMbJo0z5IlR6YtL31diSIRp2Z4p2mwooxR-EueZ-_hZSfSTUw_srARUSdDC53aSDuCFVRtm3J",
     isFavorite: true,
     tags: ["#논알콜와인", "#콜키지프리", "#무알콜맥주"],
+    menu: ["무알콜 와인", "논알콜 칵테일", "무알콜 맥주"],
+    recommendationReason: "알코올/논알콜 밸런스가 뛰어나 추천"
   },
   {
     id: 2,
