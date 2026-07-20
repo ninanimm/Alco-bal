@@ -4,8 +4,8 @@ import json
 import time
 from bs4 import BeautifulSoup
 
-# 검색어 URL (성수 술집)
-BASE_URL = "https://www.diningcode.com/list.dc?query=%EC%84%B1%EC%88%98%20%EC%88%A0%EC%A7%91"
+# 검색어 URL (서촌 술집)
+BASE_URL = "https://www.diningcode.com/list.dc?query=%EC%84%9C%EC%B4%8C%20%EC%88%A0%EC%A7%91"
 
 def get_restaurant_links():
     """초기 페이지에서 JSON-LD 데이터를 파싱하여 레스토랑 이름과 상세 URL 목록을 가져온다."""

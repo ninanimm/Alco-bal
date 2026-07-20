@@ -17,17 +17,16 @@ def seed():
     engine = create_engine(SQLALCHEMY_DATABASE_URL)
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     
-    # Drop all existing tables to ensure clean schema, then create
-    print("Dropping old tables and recreating schema...")
-    Base.metadata.drop_all(bind=engine)
-    Base.metadata.create_all(bind=engine)
+    # 기존 데이터를 유지하기 위해 삭제 로직을 비활성화합니다.
+    # print("Dropping old tables and recreating schema...")
+    # Base.metadata.drop_all(bind=engine)
+    # Base.metadata.create_all(bind=engine)
             
     db = SessionLocal()
     
-    # Clear existing data for fresh seed
-    print("Clearing old data...")
-    db.query(Restaurant).delete()
-    db.commit()
+    # print("Clearing old data...")
+    # db.query(Restaurant).delete()
+    # db.commit()
     
     print("Reading restaurants.json (Seongsu data)...")
     try:
@@ -47,9 +46,9 @@ def seed():
             tel = r_data.get('tel', '')
             menu = r_data.get('menu', [])
             
-            # 성수동 부근 임의의 좌표 생성 (약 37.544, 127.055 부근)
-            lat = 37.544 + random.uniform(-0.005, 0.005)
-            lon = 127.055 + random.uniform(-0.005, 0.005)
+            # 서촌(경복궁역) 부근 임의의 좌표 생성 (약 37.576, 126.973 부근)
+            lat = 37.576 + random.uniform(-0.005, 0.005)
+            lon = 126.973 + random.uniform(-0.005, 0.005)
                 
             location = f"SRID=4326;POINT({lon} {lat})"
             
