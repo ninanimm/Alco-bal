@@ -2,6 +2,7 @@ import json
 import random
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import NullPool
 import sys
 import os
 from dotenv import load_dotenv
@@ -14,7 +15,7 @@ from app.database import SQLALCHEMY_DATABASE_URL
 
 def seed():
     print("Connecting to DB...")
-    engine = create_engine(SQLALCHEMY_DATABASE_URL)
+    engine = create_engine(SQLALCHEMY_DATABASE_URL, poolclass=NullPool)
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     
     # 기존 데이터를 유지하기 위해 삭제 로직을 비활성화합니다.
@@ -46,9 +47,9 @@ def seed():
             tel = r_data.get('tel', '')
             menu = r_data.get('menu', [])
             
-            # 서촌(경복궁역) 부근 임의의 좌표 생성 (약 37.576, 126.973 부근)
-            lat = 37.576 + random.uniform(-0.005, 0.005)
-            lon = 126.973 + random.uniform(-0.005, 0.005)
+            # 한남동 부근 임의의 좌표 생성 (약 37.5238, 127.0011 부근)
+            lat = 37.5238 + random.uniform(-0.005, 0.005)
+            lon = 127.0011 + random.uniform(-0.005, 0.005)
                 
             location = f"SRID=4326;POINT({lon} {lat})"
             
@@ -85,17 +86,22 @@ def seed():
             )
             db.add(n)
             
-            count += 1
-            if count % 10 == 0:
-                print(f"Inserted {count} restaurants...")
+            db.add(r)
+            try:
+                db.commit()
+            except Exception as e:
+                db.rollback()
+                print(f"Error inserting {r.name}: {e}")
+                
+            if (idx + 1) % 10 == 0:
+                print(f"Processed {idx + 1} restaurants...")
                 
         except Exception as e:
             print(f"Error on row {idx}: {e}")
             continue
             
-    db.commit()
     db.close()
-    print(f"Seeding completed successfully! Total inserted: {count}")
+    print(f"Seeding completed successfully! Total processed: {len(restaurants)}")
 
 if __name__ == "__main__":
     seed()
