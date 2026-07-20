@@ -1,9 +1,7 @@
-import pandas as pd
+import json
 import random
-import math
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from pyproj import Transformer
 import sys
 import os
 from dotenv import load_dotenv
@@ -31,33 +29,40 @@ def seed():
     db.query(Restaurant).delete()
     db.commit()
     
-    print("Reading CSV...")
-    df = pd.read_csv('../jongro.csv')
-    df = df.dropna(subset=['좌표정보(X)', '좌표정보(Y)'])
-    
-    # epsg:2097 (Bessel Korea Middle Belt) to epsg:4326 (WGS84)
-    transformer = Transformer.from_crs("epsg:2097", "epsg:4326", always_xy=True)
-    
+    print("Reading restaurants.json (Seongsu data)...")
+    try:
+        with open("restaurants.json", "r", encoding="utf-8") as f:
+            restaurants = json.load(f)
+    except FileNotFoundError:
+        print("restaurants.json 파일을 찾을 수 없습니다. 크롤러를 먼저 실행해주세요.")
+        return
+
     count = 0
-    for idx, row in df.iterrows():
+    random.seed(42) # 결과 재현성을 위해 시드 고정
+    
+    for idx, r_data in enumerate(restaurants):
         try:
-            name = str(row.get('사업장명', f'Restaurant {idx}'))
-            address = str(row.get('도로명주소', '서울 종로구'))
-            if pd.isna(address) or address == 'nan':
-                address = str(row.get('지번주소', '서울 종로구'))
-                
-            x = float(row['좌표정보(X)'])
-            y = float(row['좌표정보(Y)'])
+            name = r_data.get('name', f'Restaurant {idx}')
+            address = r_data.get('address', '서울 성동구 성수동')
+            tel = r_data.get('tel', '')
+            menu = r_data.get('menu', [])
             
-            lon, lat = transformer.transform(x, y)
-            
-            if math.isnan(lon) or math.isnan(lat):
-                continue
+            # 성수동 부근 임의의 좌표 생성 (약 37.544, 127.055 부근)
+            lat = 37.544 + random.uniform(-0.005, 0.005)
+            lon = 127.055 + random.uniform(-0.005, 0.005)
                 
             location = f"SRID=4326;POINT({lon} {lat})"
             
-            alk_score = random.randint(30, 99)
-            non_alk_score = random.randint(30, 99)
+            # 음주/비음주 점수 부여 (테스트용)
+            if idx % 3 == 0:
+                alk_score = random.randint(85, 99)
+                non_alk_score = random.randint(30, 50)
+            elif idx % 3 == 1:
+                alk_score = random.randint(30, 60)
+                non_alk_score = random.randint(85, 99)
+            else:
+                alk_score = random.randint(70, 85)
+                non_alk_score = random.randint(70, 85)
             
             r = Restaurant(
                 name=name,
@@ -65,7 +70,9 @@ def seed():
                 location=location,
                 alcohol_score=alk_score,
                 non_alcohol_score=non_alk_score,
-                image_url=f"https://picsum.photos/seed/{idx}/300/200"
+                image_url=f"https://picsum.photos/seed/{idx+1000}/300/200",
+                tel=tel,
+                menu=menu
             )
             db.add(r)
             db.flush()
@@ -80,7 +87,7 @@ def seed():
             db.add(n)
             
             count += 1
-            if count % 100 == 0:
+            if count % 10 == 0:
                 print(f"Inserted {count} restaurants...")
                 
         except Exception as e:

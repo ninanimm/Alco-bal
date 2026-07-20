@@ -1,5 +1,8 @@
-from fastapi import FastAPI, Depends, HTTPException, Query
+import os
+from fastapi import FastAPI, Depends, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, JSONResponse
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from . import crud, models, schemas
@@ -53,3 +56,27 @@ def get_restaurant_detail(id: int, db: Session = Depends(get_db)):
     if restaurant is None:
         raise HTTPException(status_code=404, detail="식당을 찾을 수 없습니다.")
     return restaurant
+
+# 5. 프론트엔드 정적 파일 서빙 및 SPA(React Router) 폴백 지원
+frontend_dist = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "frontend", "dist")
+
+if os.path.exists(frontend_dist):
+    # 정적 파일(assets) 마운트
+    assets_dir = os.path.join(frontend_dist, "assets")
+    if os.path.exists(assets_dir):
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+        
+    # 기타 루트에 위치한 정적 파일들(favicon 등) 처리 및 SPA 폴백 라우팅
+    @app.exception_handler(404)
+    async def not_found_handler(request: Request, exc: HTTPException):
+        # API 경로에서 발생한 404는 그대로 반환
+        if request.url.path.startswith("/api/"):
+            return JSONResponse(status_code=404, content={"detail": exc.detail})
+            
+        # 루트에 위치한 특정 정적 파일 처리 (예: /vite.svg, /favicon.ico 등)
+        file_path = os.path.join(frontend_dist, request.url.path.lstrip("/"))
+        if os.path.isfile(file_path):
+            return FileResponse(file_path)
+            
+        # 그 외 모든 알 수 없는 경로는 React의 index.html로 전달 (SPA 라우팅 지원)
+        return FileResponse(os.path.join(frontend_dist, "index.html"))

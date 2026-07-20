@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, DECIMAL, ForeignKey, Table, Boolean
+from sqlalchemy import Column, Integer, String, Text, DateTime, DECIMAL, ForeignKey, Table, Boolean, JSON
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from geoalchemy2 import Geography
@@ -50,6 +50,8 @@ class Restaurant(Base):
     non_alcohol_score = Column(DECIMAL(3, 1), default=0.0)
     image_url = Column(String(255))
     corkage_info = Column(String(255))
+    tel = Column(String(50))
+    menu = Column(JSON)
 
     # 관계 설정 (파이썬 코드에서 쉽게 데이터를 불러오기 위함)
     tags = relationship("Tag", secondary=restaurant_tags, back_populates="restaurants")
