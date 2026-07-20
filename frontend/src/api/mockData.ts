@@ -59,8 +59,9 @@ export const RESTAURANT_RESULTS: Restaurant[] = [
     imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuB1lFtTgM3-JlwhCh_NLErRa72uQcC5D57dHAkkGMEmlbcHIPx35ioivAIOCipJK-szmPgLndlFLGLZ1MigYb7FHhmB8aO1FlrrWOCTm_saKVVF5GFcEK1X6yonyksOMhvs54M6aDyW_-Rjm_CeV-uu4JSMEf83WgjTkJuTndpbBe3Fc6gh5WnrUs2640cWBBCeeyEAMbJo0z5IlR6YtL31diSIRp2Z4p2mwooxR-EueZ-_hZSfSTUw_srARUSdDC53aSDuCFVRtm3J",
     isFavorite: true,
     tags: ["#논알콜와인", "#콜키지프리", "#무알콜맥주"],
+    nonAlcoholOptions: ["무알콜 와인", "무알콜 맥주"],
     menu: ["무알콜 와인", "논알콜 칵테일", "무알콜 맥주"],
-    recommendationReason: "알코올/논알콜 밸런스가 뛰어나 추천"
+    recommendationReason: "콜키지 프리 · 논알콜 메뉴: 무알콜 와인 · 음주·비음주 모두 만족"
   },
   {
     id: 2,
@@ -71,6 +72,7 @@ export const RESTAURANT_RESULTS: Restaurant[] = [
     imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuD2J5BgVnoxgeYE7xAK2QA9mmSJso76K2as5dHz3pK4f0tNfsidHI4t0pZS6ooowJyPUslb6kSFe_tJpcXIIFtH-5JIqmjtrIMD7AvYlxLn-iaXE_DFg5vvhHXmD1yqwJxQa7VFh_hHQKurBzJBEh0tVUZ6MEtJlCOl7466mgybu02s6qwTOBr3MTPKTqKRScb8NXJJBrFhjAC6cx5nDmRKJBj9OQX5_hsCSpdkwMGtEH4iM4XvAtgfsKiXvZ0TgvHxveIP75d9CzKH",
     isFavorite: false,
     tags: ["#수제콤부차", "#하이볼맛집"],
+    nonAlcoholOptions: [],
   },
   {
     id: 3,
@@ -81,6 +83,7 @@ export const RESTAURANT_RESULTS: Restaurant[] = [
     imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuCP6iF1Xf4_D2DyCk2gOSJgNJxAPJOOj_1qvDXzg-XSoJ8CZzxPQN7JdfeZlQ_gWyh3RYkekt57GDQs1AKi6y9ORhKTCRrOnCysfnFLF8sdH9WHYgUaIrjr3PIRUJWsNWVYjhr1mHuLHoUup7cRpPJKYy9gBdy9lbmJ315lClG_enX9e79Ek58PSg3qKKpu5si4hQ43jsbyZY1T1n1lYFSGuOBvwqeCQryGCcustTjw0sGVzmz_jnaw0Ce2l2DLRaZEVr3AsvWVXEN2",
     isFavorite: false,
     tags: ["#비건옵션", "#프라이빗룸"],
+    nonAlcoholOptions: [],
   },
   {
     id: 4,
@@ -91,5 +94,7 @@ export const RESTAURANT_RESULTS: Restaurant[] = [
     imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuB6RyFQEruBcu7q67-v2PlxoDaNT-0qKFUKI9G1JxE5LwxtXZ7ccpPzDbuNkEj_m_9bXz-zRKtQJUkukbbD3RthGMjsLzILE5aMsUDYMJ0AVMCm_RmBxzalXtaXs8BvEK-nxgp7XIsojZVYqMnxZQQLpfIa1B6z-WlNq77WONs6CaV1lJRjNTz5WeI0tEZcH1M0OWHByZBBQ9mrQIT5ZiMNIsD8p_mo5BN590ZeEIn3BX94IndYt9RreIycT2ysWXRTWpb5D12UE-kE",
     isFavorite: false,
     tags: ["#내추럴와인", "#다양한논알콜"],
+    nonAlcoholOptions: [],
   },
 ];
+
