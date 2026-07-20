@@ -47,7 +47,7 @@ export const MainPage: React.FC = () => {
             <div className="space-y-xs">
               <label className="font-body-sm text-secondary px-1">모임 장소</label>
               <div className="relative flex items-center">
-                <span className="material-symbols-outlined absolute left-4 text-secondary">location_on</span>
+                <span className="material-symbols-outlined absolute left-4 text-secondary pointer-events-none">location_on</span>
                 <input 
                   className="w-full h-14 pl-12 pr-4 bg-surface-container-low rounded-lg border-none focus:ring-2 focus:ring-primary text-body-md transition-all" 
                   placeholder="예: 강남역, 홍대" 
@@ -63,7 +63,7 @@ export const MainPage: React.FC = () => {
               <div className="space-y-xs">
                 <label className="font-body-sm text-secondary px-1">날짜</label>
                 <div className="relative flex items-center">
-                  <span className="material-symbols-outlined absolute left-4 text-secondary">calendar_today</span>
+                  <span className="material-symbols-outlined absolute left-4 text-secondary pointer-events-none">calendar_today</span>
                   <input 
                     className="w-full h-14 pl-12 pr-4 bg-surface-container-low rounded-lg border-none focus:ring-2 focus:ring-primary text-body-md transition-all" 
                     placeholder="오늘" 
@@ -76,7 +76,7 @@ export const MainPage: React.FC = () => {
               <div className="space-y-xs">
                 <label className="font-body-sm text-secondary px-1">전체 인원수</label>
                 <div className="relative flex items-center">
-                  <span className="material-symbols-outlined absolute left-4 text-secondary">group</span>
+                  <span className="material-symbols-outlined absolute left-4 text-secondary pointer-events-none">group</span>
                   <input 
                     className="w-full h-14 pl-12 pr-4 bg-surface-container-low rounded-lg border-none focus:ring-2 focus:ring-primary text-body-md transition-all" 
                     placeholder="4명" 
