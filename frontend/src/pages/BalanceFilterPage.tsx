@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { TopAppBar } from '../components/layout/TopAppBar';
 import { BottomNavBar } from '../components/layout/BottomNavBar';
 
 export const BalanceFilterPage: React.FC = () => {
+  const locationState = useLocation();
   const navigate = useNavigate();
   const [sliderValue, setSliderValue] = useState(50);
   
@@ -11,7 +12,13 @@ export const BalanceFilterPage: React.FC = () => {
   const nonDrinking = sliderValue;
 
   const handleNextStep = () => {
-    navigate('/search-result', { state: { drinking, nonDrinking } });
+    navigate('/search-result', { 
+      state: { 
+        ...locationState.state, 
+        drinking, 
+        nonDrinking 
+      } 
+    });
   };
 
   return (

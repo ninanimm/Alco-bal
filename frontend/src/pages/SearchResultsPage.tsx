@@ -14,14 +14,19 @@ export const SearchResultsPage: React.FC = () => {
   // 기본값 설정
   const drinking = location.state?.drinking ?? 70;
   const nonDrinking = location.state?.nonDrinking ?? 30;
+  
+  // MainPage에서 넘어온 값
+  const searchKeyword = location.state?.location ?? '';
+  const searchDate = location.state?.date ?? '';
+  const searchHeadcount = location.state?.headcount ?? '';
 
   useEffect(() => {
     const fetchResults = async () => {
-      const data = await getRestaurants();
+      const data = await getRestaurants(searchKeyword, drinking, searchDate, searchHeadcount);
       setRestaurants(data);
     };
     fetchResults();
-  }, []);
+  }, [searchKeyword, drinking, searchDate, searchHeadcount]);
 
   const handleChangeBalance = () => {
     navigate('/balance-filter');

@@ -18,13 +18,27 @@ export const getHotPlaces = async (): Promise<HotPlace[]> => {
   return response.json();
 };
 
-export const getRestaurants = async (keyword: string = ""): Promise<Restaurant[]> => {
+export const getRestaurants = async (
+  keyword: string = "",
+  drinker_ratio: number = 50,
+  date: string = "",
+  total_people: string = ""
+): Promise<Restaurant[]> => {
   const url = new URL(`${BASE_URL}/restaurants`);
-  if (keyword) {
-    url.searchParams.append('keyword', keyword);
-  } else {
-    // 백엔드는 keyword를 필수로 받게 되어있지만 빈문자열도 허용합니다. (query = query)
-    url.searchParams.append('keyword', '');
+  
+  url.searchParams.append('keyword', keyword);
+  url.searchParams.append('drinker_ratio', drinker_ratio.toString());
+  
+  if (date) {
+    url.searchParams.append('date', date);
+  }
+  
+  if (total_people) {
+    // 백엔드는 int를 받으므로 숫자만 추출하거나 그냥 전달합니다. (백엔드가 Optional[int]로 받음)
+    const peopleInt = parseInt(total_people.replace(/[^0-9]/g, ''));
+    if (!isNaN(peopleInt)) {
+      url.searchParams.append('total_people', peopleInt.toString());
+    }
   }
 
   const response = await fetch(url.toString());

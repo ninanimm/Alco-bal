@@ -25,7 +25,7 @@ export const MainPage: React.FC = () => {
   }, []);
 
   const handleNextStep = () => {
-    navigate('/balance-filter');
+    navigate('/balance-filter', { state: { location, date, headcount } });
   };
 
   const handleClearAll = () => {
